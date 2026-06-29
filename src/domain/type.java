@@ -1,4 +1,8 @@
 package domain;
 
-public class type {
+public enum type {
+    DEPOSIT,
+    WITHDRAW,
+    TRANSFER_IN,
+    TRANSFER_OUT
 }
