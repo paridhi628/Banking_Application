@@ -26,7 +26,7 @@ public class Main {
             String choice = sc.nextLine().trim();
            System.out.println("CHOICE: " + choice);
             switch (choice) {
-                case "1" -> openAccount(sc);
+               // case "1" -> openAccount(sc);
                 case "2" -> deposit(sc);
                 case "3" -> withdraw(sc);
                 case "4" -> transfer(sc);
