@@ -7,11 +7,11 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        Scanner sc=new Scanner(System.in);
-        BankService bankService= new BankServiceImpl();
-        boolean running= true;
+        Scanner sc = new Scanner(System.in);
+        BankService bankService = new BankServiceImpl();
+        boolean running = true;
         System.out.println("WELCOME TO CONSOLE BANK");
-        while(running) {
+        while (running) {
             System.out.println("""
                     1) Open Account
                     2) Deposit
@@ -24,14 +24,14 @@ public class Main {
                     """);
             System.out.print("CHOOSE: ");
             String choice = sc.nextLine().trim();
-           System.out.println("CHOICE: " + choice);
+            System.out.println("CHOICE: " + choice);
             switch (choice) {
-               // case "1" -> openAccount(sc);
-                case "2" -> deposit(sc);
+                case "1" -> openAccount(sc, bankService);
+                case "2" -> deposit(sc, bankService);
                 case "3" -> withdraw(sc);
                 case "4" -> transfer(sc);
                 case "5" -> statement(sc);
-                case "6" -> listAccounts(sc);
+                case "6" -> listAccounts(sc, bankService);
                 case "7" -> searchAccounts(sc);
                 case "0" -> running = false;
             }
@@ -39,37 +39,50 @@ public class Main {
         }
     }
 
-    private static void openAccount(Scanner sc, BankService bankService) {
-        System.out.println("Customer Name: ");
-        String name=sc.nextLine().trim();
-        System.out.println("Customer Email: ");
-        String email= sc.nextLine().trim();
-        System.out.println("Account Type (SAVINGS/CURRENT): ");
-        String type= sc.nextLine().trim();
-        System.out.println("Initial Deposit (optional, blank for 0): ");
-        String amountStr= sc.nextLine().trim();
-        Double initial= Double.valueOf(amountStr);
-        bankService.openAccount(name, email, type);
+        private static void openAccount (Scanner sc, BankService bankService){
+            System.out.println("Customer Name: ");
+            String name = sc.nextLine().trim();
+            System.out.println("Customer Email: ");
+            String email = sc.nextLine().trim();
+            System.out.println("Account Type (SAVINGS/CURRENT): ");
+            String type = sc.nextLine().trim();
+            System.out.println("Initial Deposit (optional, blank for 0): ");
+            String amountStr = sc.nextLine().trim();
+            Double initial = Double.valueOf(amountStr);
+            String accountNumber = bankService.openAccount(name, email, type);
+            if (initial > 0)
+                bankService.deposit();
+            System.out.println("Account opened: " + accountNumber);
 
-    }
+        }
 
-    private static void deposit(Scanner sc) {
-    }
+        private static void deposit (Scanner sc, BankService bankService){
+            System.out.println("Account number: ");
+            String accountNumber = sc.nextLine().trim();
+            System.out.println("Amount: ");
+            Double amount = Double.valueOf(sc.nextLine().trim());
+            bankService.deposit(accountNumber, amount, "Deposit");
+            System.out.println("Deposited: ");
+        }
 
-    private static void withdraw(Scanner sc) {
-    }
+        private static void withdraw (Scanner sc){
+        }
 
-    private static void transfer(Scanner sc) {
-    }
+        private static void transfer (Scanner sc){
+        }
 
-    private static void statement(Scanner sc) {
-    }
+        private static void statement (Scanner sc){
+        }
 
-    private static void listAccounts(Scanner sc) {
-    }
+        private static void listAccounts (Scanner sc, BankService bankService){
+            bankService.listAccounts().forEach(n -> {
+                System.out.println(n.getAccountNumber() + " | " + n.getAccountType() + " | " + n.getBalance());
+            });
 
-    private static void searchAccounts(Scanner sc) {
-    }
+        }
+
+        private static void searchAccounts (Scanner sc){
+        }
 
 
 }
