@@ -48,6 +48,45 @@ private final TransactionRepository transactionRepository= new TransactionReposi
         transactionRepository.add(Transaction);
     }
 
+    @Override
+    public void withdraw(String accountNumber, Double amount, String note) {
+        account Account= accRe.findByNumber(accountNumber)
+                .orElseThrow( ()-> new RuntimeException("Account not Found: " +accountNumber));
+        if(Account.getBalance().compareTo(amount)<0)
+            throw new RuntimeException("Insufficient Balance");
+        Account.setBalance(Account.getBalance() + amount);
+        transaction Transaction= new transaction(UUID.randomUUID().toString(),
+                type.WITHDRAW,Account.getAccountNumber(),amount,LocalDateTime.now(), note );
+        transactionRepository.add(Transaction);
+    }
+
+    @Override
+    public void transfer(String fromAcc, String toAcc, Double amount, String note) {
+        if(fromAcc.equals(toAcc))
+            throw new RuntimeException("Cannot Transfer to your own account");
+        account from= accRe.findByNumber(fromAcc)
+                .orElseThrow( ()-> new RuntimeException("Account not Found: " +fromAcc));
+        account to= accRe.findByNumber(toAcc)
+                .orElseThrow( ()-> new RuntimeException("Account not Found: " +toAcc));
+        if(from.getBalance().compareTo(amount)<0)
+            throw new RuntimeException("Insufficient Balance");
+        from.setBalance(from.getBalance() + amount);
+        to.setBalance(to.getBalance() + amount);
+        transaction FromTransaction= new transaction(UUID.randomUUID().toString(),
+                type.TRANSFER_OUT,from.getAccountNumber(),amount,LocalDateTime.now(), note );
+        transactionRepository.add(FromTransaction);
+        transaction ToTransaction= new transaction(UUID.randomUUID().toString(),
+                type.TRANSFER_IN,to.getAccountNumber(),amount,LocalDateTime.now(), note );
+        transactionRepository.add(ToTransaction);
+    }
+
+    @Override
+    public List<transaction> getStatement(String account) {
+        return transactionRepository.findByAccount(account).stream()
+                .sorted(Comparator.comparing(transaction:: getTimeStamp))
+                .collect(Collectors.toList());
+    }
+
     private String getAccountNumber() {
         int size= accRe.findAll().size() +1;
         return String.format("AC%06d", size);
