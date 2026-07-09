@@ -18,4 +18,5 @@ public interface BankService {
 
      List<transaction> getStatement(String account);
 
+    List<account> searchAccountByCustomer(String q);
 }

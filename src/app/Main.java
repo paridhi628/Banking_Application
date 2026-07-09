@@ -32,7 +32,7 @@ public class Main {
                 case "4" -> transfer(sc,bankService);
                 case "5" -> statement(sc,bankService);
                 case "6" -> listAccounts(sc, bankService);
-                case "7" -> searchAccounts(sc);
+                case "7" -> searchAccounts(sc,bankService);
                 case "0" -> running = false;
             }
 
@@ -99,8 +99,11 @@ public class Main {
 
         }
 
-        private static void searchAccounts (Scanner sc){
-
+        private static void searchAccounts (Scanner sc, BankService bankService){
+            System.out.println("Customer name contains: ");
+            String q=sc.nextLine().trim();
+            bankService.searchAccountByCustomer(q).forEach(account ->
+                    System.out.println(account.getAccountNumber() + " | " + account.getAccountType() + " | " +account.getBalance()));
         }
 
 
